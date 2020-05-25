@@ -91,8 +91,8 @@ function push:setShader(name, shader)
 end
 
 function push:initValues()
-  self._PSCALE = self._highdpi and love.window.getPixelScale() or 1
-  
+  self._PSCALE = self._highdpi and love.window.getDPIScale() or 1
+  -- love.window.getPixelScale() => love.window.getDPIScale() after love2d 11.1
   self._SCALE = {
     x = self._RWIDTH/self._WWIDTH * self._PSCALE,
     y = self._RHEIGHT/self._WHEIGHT * self._PSCALE
