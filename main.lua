@@ -47,11 +47,19 @@ function love.draw()
 
   -- clear the screen with a specific color; in this case, a color similar
   -- to some versions of the original Pong
-  love.graphics.clear(40, 45, 52, 255)
+  -- love.graphics.clear(40, 45, 52, 255)
 
   -- draw welcome text toward the top of the screen
   love.graphics.printf("Hello Pong!", 0, 20, VIRTUAL_WIDTH, "center")
 
+  -- render first paddle (left side)
+  love.graphics.rectangle("fill", 10, 30, 5, 20)
+
+  -- render second paddle (right side)
+  love.graphics.rectangle("fill", VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 50, 5, 20)
+
+  -- render the ball
+  love.graphics.rectangle("fill", VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
   -- end rendering at virtual resolution
   push:apply("end")
 
