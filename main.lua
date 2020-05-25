@@ -1,12 +1,21 @@
+push = requier 'push'
+
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
+
+VIRTUAL_WIDTH = 432
+VIRTUAL_HEIGTH = 243
 
 --[[
     Runs when the game first starts up, only once; used to initialize the game.
 ]]
 function love.load()
-    love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
+   -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text 
+    -- and graphics; try removing this function to see the difference!
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+
+    push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT,WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = false,
         vsync = true
