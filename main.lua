@@ -52,6 +52,7 @@ function love.load()
   -- velocity and position variables for our ball when play starts
   ballX = VIRTUAL_WIDTH / 2 - 2
   ballY = VIRTUAL_HEIGHT / 2 - 2
+
   -- math.random returns a random value between the left and right number
   ballDX = math.random(2) == 1 and 100 or -100
   ballDY = math.random(-50, 50)
@@ -77,16 +78,40 @@ function love.update(dt)
   end
 
   --player 2 movment
-  if love.keyboard.isDown("up") and player2Y >= 0 then
+  if love.keyboard.isDown("up") then
     player2Y = math.max(0, player2Y + -PADDLE_SPEED * dt)
   elseif love.keyboard.isDown("down") then
     player2Y = math.min(VIRTUAL_HEIGHT - 20, player2Y + PADDLE_SPEED * dt)
+  end
+  -- update our ball based on its DX and DY only if we're in play state;
+  -- scale the velocity by dt so movement is framerate-independent
+  if gameState == "play" then
+    ballX = ballX + ballDX * dt
+    ballY = ballY + ballDY * dt
   end
 end
 
 function love.keypressed(key)
   if key == "escape" then
+    -- if we press enter during the start state of the game, we'll go into play mode
+    -- during play mode, the ball will move in a random direction
     love.event.quit()
+  elseif key == "enter" or key == "return" then
+    if gameState == "start" then
+      gameState = "play"
+    else
+      gameState = "start"
+
+      -- start ball's position in the middle of the screen
+      ballX = VIRTUAL_WIDTH / 2 - 2
+      ballY = VIRTUAL_HEIGHT / 2 - 2
+
+      -- given ball's x and y velocity a random starting value
+      -- the and/or pattern here is Lua's way of accomplishing a ternary operation
+      -- in other programming languages like C
+      ballDX = math.random(2) == 1 and 100 or -100
+      ballDY = math.random(-50, 50) * 1.5
+    end
   end
 end
 
@@ -101,14 +126,20 @@ function love.draw()
   -- to some versions of the original Pong
   -- love.graphics.clear(40, 45, 52, 255)
 
-  -- draw welcome text toward the top of the screen
-  love.graphics.printf("Hello Pong!", 0, 20, VIRTUAL_WIDTH, "center")
+  -- -- draw welcome text toward the top of the screen
+  -- love.graphics.printf("Hello Pong!", 0, 20, VIRTUAL_WIDTH, "center")
 
   -- draw score on the left and right center of the screen
   -- need to switch font to draw before actually printing
-  love.graphics.setFont(scoreFont)
-  love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
-  love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
+  -- love.graphics.setFont(scoreFont)
+  -- love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
+  -- love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
+
+  if gameState == "start" then
+    love.graphics.printf("Hello Start State!", 0, 20, VIRTUAL_WIDTH, "center")
+  else
+    love.graphics.printf("Hello Play State!", 0, 20, VIRTUAL_WIDTH, "center")
+  end
 
   -- render first paddle (left side)
   love.graphics.rectangle("fill", 10, player1Y, 5, 20)
@@ -117,7 +148,7 @@ function love.draw()
   love.graphics.rectangle("fill", VIRTUAL_WIDTH - 10, player2Y, 5, 20)
 
   -- render the ball
-  love.graphics.rectangle("fill", VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
+  love.graphics.rectangle("fill", ballX, ballY, 4, 4)
   -- end rendering at virtual resolution
   push:apply("end")
 
