@@ -37,12 +37,12 @@ function love.load()
     }
   )
 
-  -- init score 
+  -- init score
   player1Score = 0
   player2Score = 0
 
-  -- init 
-  player1Y = 30 
+  -- init
+  player1Y = 30
   player2Y = WINDOW_HEIGHT - 50
 end
 
@@ -50,17 +50,22 @@ end
     Runs every frame, with "dt" passed in, our delta in seconds 
     since the last frame, which LÖVE2D supplies us.
 ]]
-
 function love.update(dt)
   -- player 1 movement
-  if love.keyboard.isDown('w') then
-  -- add negative paddle speed to current Y scaled by deltaTime
+  if love.keyboard.isDown("w") then
+    -- add negative paddle speed to current Y scaled by deltaTime
     player1Y = player1Y + -PADDLE_SPEED * dt
-  elseif love.keyboard.isDown('s') then
+  elseif love.keyboard.isDown("s") then
     -- add positive paddle speed to current Y scaled by deltaTime
     player1Y = player1Y + PADDLE_SPEED * dt
   end
 
+  --player 2 movment
+  if love.keyboard.isDown("up") then
+    player2Y = player2Y + -PADDLE_SPEED * dt
+  elseif love.keyboard.isDown("dowb") then
+    player2Y = player2Y + PADDLE_SPEED * dt
+  end
 end
 
 function love.keypressed(key)
@@ -82,6 +87,12 @@ function love.draw()
 
   -- draw welcome text toward the top of the screen
   love.graphics.printf("Hello Pong!", 0, 20, VIRTUAL_WIDTH, "center")
+
+  -- draw score on the left and right center of the screen
+  -- need to switch font to draw before actually printing
+  love.graphics.setFont(scoreFont)
+  love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
+  love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
 
   -- render first paddle (left side)
   love.graphics.rectangle("fill", 10, 30, 5, 20)
