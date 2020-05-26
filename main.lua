@@ -32,7 +32,10 @@ function love.load()
   -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text
   -- and graphics; try removing this function to see the difference!
   love.graphics.setDefaultFilter("nearest", "nearest")
-
+  
+  -- set a title to our app window
+  love.window.setTitle('Pong')
+  
   -- "seed" the RNG so that calls to random are always random
   -- use the current time, since that will vary on startup every time
   math.randomseed(os.time())
@@ -41,7 +44,7 @@ function love.load()
   smallFont = love.graphics.newFont("font.ttf", 8)
 
   -- larger font for the scoring
-  scoreFont = love.graphics.newFont("font.ttf", 12)
+  scoreFont = love.graphics.newFont("font.ttf", 32)
 
   -- set love2d active font to smallFont object
   love.graphics.setFont(smallFont)
@@ -139,17 +142,18 @@ function love.draw()
   -- -- draw welcome text toward the top of the screen
   -- love.graphics.printf("Hello Pong!", 0, 20, VIRTUAL_WIDTH, "center")
 
-  -- draw score on the left and right center of the screen
-  -- need to switch font to draw before actually printing
-  -- love.graphics.setFont(scoreFont)
-  -- love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
-  -- love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
-
   if gameState == "start" then
     love.graphics.printf("Hello Start State!", 0, 20, VIRTUAL_WIDTH, "center")
   else
     love.graphics.printf("Hello Play State!", 0, 20, VIRTUAL_WIDTH, "center")
   end
+
+  -- draw score on the left and right center of the screen
+  -- need to switch font to draw before actually printing
+  love.graphics.setFont(scoreFont)
+  love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
+  love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
+
 
   -- render first paddle (left side)
   player1:render()
@@ -159,6 +163,10 @@ function love.draw()
 
   -- render the ball
   ball:render()
+  
+  -- show fps indicator 
+  displayFPS() 
+
   -- end rendering at virtual resolution
   push:apply("end")
 
@@ -169,4 +177,17 @@ function love.draw()
   --     WINDOW_HEIGHT / 2 - 6,  -- starting Y (halfway down the screen)
   --     WINDOW_WIDTH,           -- number of pixels to center within (the entire screen here)
   --     'center')               -- alignment mode, can be 'center', 'left', or 'right'
+end
+
+
+--[[
+  renders the current FPS
+]]
+
+function displayFPS()
+  -- simple FPS display across all states
+
+  love.graphics.setFont(smallFont)
+  love.graphics.setColor(0, 255, 0, 255)
+  love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
