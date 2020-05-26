@@ -32,10 +32,10 @@ function love.load()
   -- use nearest-neighbor filtering on upscaling and downscaling to prevent blurring of text
   -- and graphics; try removing this function to see the difference!
   love.graphics.setDefaultFilter("nearest", "nearest")
-  
+
   -- set a title to our app window
-  love.window.setTitle('Pong')
-  
+  love.window.setTitle("Pong")
+
   -- "seed" the RNG so that calls to random are always random
   -- use the current time, since that will vary on startup every time
   math.randomseed(os.time())
@@ -83,6 +83,44 @@ end
     since the last frame, which LÖVE2D supplies us.
 ]]
 function love.update(dt)
+  if gameState == "play" then
+    -- detect ball collision with paddles, reversing dx if true and
+    -- slightly increasing it, then altering the dy based on the position of collision
+    if ball:collides(player1) then
+      ball.dx = -ball.dx * 1.03
+      ball.x = player1.x + 5
+
+      -- keep velocity going in the same direction, but randomize it
+      if ball.dy < 0 then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
+    end
+    if ball:collides(player2) then
+      ball.dx = -ball.dx * 1.03
+      ball.x = player2.x - 4
+
+      -- keep velocity going in the same direction, but randomize it
+      if ball.dy < 0 then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
+    end
+
+    -- detect upper and lower screen boundary collision and reverse if collided
+    if ball.y <= 0 then
+      ball.y = 0
+      ball.dy = -ball.dy
+    end
+
+    -- -4 to account for the ball's size
+    if ball.y >= VIRTUAL_HEIGHT - 4 then
+      ball.y = VIRTUAL_HEIGHT - 4
+      ball.dy = -ball.dy
+    end
+  end
   -- player 1 movement
   if love.keyboard.isDown("w") then
     -- add negative paddle speed to current Y scaled by deltaTime
@@ -154,7 +192,6 @@ function love.draw()
   love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
   love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
 
-
   -- render first paddle (left side)
   player1:render()
 
@@ -163,9 +200,9 @@ function love.draw()
 
   -- render the ball
   ball:render()
-  
-  -- show fps indicator 
-  displayFPS() 
+
+  -- show fps indicator
+  displayFPS()
 
   -- end rendering at virtual resolution
   push:apply("end")
@@ -179,15 +216,13 @@ function love.draw()
   --     'center')               -- alignment mode, can be 'center', 'left', or 'right'
 end
 
-
 --[[
   renders the current FPS
 ]]
-
 function displayFPS()
   -- simple FPS display across all states
 
   love.graphics.setFont(smallFont)
   love.graphics.setColor(0, 255, 0, 255)
-  love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+  love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10)
 end
