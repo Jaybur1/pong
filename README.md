@@ -7,4 +7,4 @@
 
  ------------------------------------
 
- This project was build beeing part of CS50 Introduction to Game Development cource 
+ This project was build beeing part of CS50 Introduction to Game Development course 
