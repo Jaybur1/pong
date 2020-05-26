@@ -65,7 +65,7 @@ function love.load()
     WINDOW_HEIGHT,
     {
       fullscreen = false,
-      resizable = false,
+      resizable = true,
       vsync = true
     }
   )
@@ -90,7 +90,13 @@ function love.load()
   -- we will use this to determine behavior during render and update
   gameState = "start"
 end
-
+--[[
+    Called by LÖVE whenever we resize the screen; here, we just want to pass in the
+    width and height to push so our virtual resolution can be resized as needed.
+]]
+function love.resize(w, h)
+  push:resize(w, h)
+end
 --[[
     Runs every frame, with "dt" passed in, our delta in seconds 
     since the last frame, which LÖVE2D supplies us.
