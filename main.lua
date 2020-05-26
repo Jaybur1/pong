@@ -121,6 +121,22 @@ function love.update(dt)
       ball.dy = -ball.dy
     end
   end
+
+  -- increase score when ever the ball goes over each sides edges
+
+  if ball.x < 0 then 
+    player2Score = player2Score + 1
+    ball:reset()
+    gameState = "start"
+  end
+
+  if ball.x > VIRTUAL_WIDTH then
+    player1Score = player1Score + 1
+    ball:reset()
+    gameState = "start"
+  end
+
+
   -- player 1 movement
   if love.keyboard.isDown("w") then
     -- add negative paddle speed to current Y scaled by deltaTime
